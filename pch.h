@@ -15,6 +15,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#define GLM_FORCE_CTOR_INIT
 #include <glm/glm.hpp>
 
 #include "Graphics/common.hpp"

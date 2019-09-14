@@ -47,16 +47,17 @@ namefile = vars(parser.parse_args()).get("filename")
 
 
 def writeVariable(vFile):
-    f.write("TARGET= " +
+    f.write("TARGET=" +
             namefile + "\n" + "INCLUDE_DIR= ")
     f.write("-I./ ")
+    f.write("-I./usr/include/ ")
     for dir in vars(parser.parse_args()).get("i"):
         f.write("-I" + dir + " ")
     if(vars(parser.parse_args()).get("wx") != None):
         f.write("-I/usr/include/wx-3.0/")
     if(vars(parser.parse_args()).get("opengl") != None):
         f.write(
-            " -I/usr/include/glad/  -I/usr/include/glm/  -I/usr/local/include/GLFW ")
+            " -I/usr/include/glad/  -I/usr/include/glm/  -I/usr/local/include/GLFW/")
     f.write("\nSRC_DIR = -Isrc/")
     f.write("\n")
     f.write("FLAGS= ")
@@ -67,7 +68,7 @@ def writeVariable(vFile):
         f.write(" -include pch.h ")
 
     if(vars(parser.parse_args()).get("d") != None):
-        f.write("-g ")
+        f.write("-ggdb -g3 ")
         f.write("-D DEBUG  ")
     else:
         f.write("-O3 ")
@@ -75,7 +76,7 @@ def writeVariable(vFile):
         f.write("`wx-config --cxxflags --libs` ")
 
     if(vars(parser.parse_args()).get("opengl") != None):
-        f.write("-ldl  `pkg-config --static --libs x11 xrandr xi xxf86vm glfw3`")
+        f.write("-ldl  `pkg-config --static --libs x11 xrandr xi xxf86vm glfw3` -lpng")
 
     f.write("\nLINKER= " + " \n")
     f.write("OBJECTS= ")
@@ -84,12 +85,12 @@ def writeVariable(vFile):
         indexpoint = filename.rfind(".")
         if(any(substring in filename for substring in [".cpp", ".c"])):
             if(index != - 1):
-                f.write(filename[index + 1: indexpoint] + ".o ")
+                f.write("$(OBJECT_DIR)"+filename[index + 1: indexpoint] + ".o ")
 
             else:
                 f.write(filename[:indexpoint] + ".o ")
     if(vars(parser.parse_args()).get("opengl") != None):
-        f.write("glad.o")
+        f.write("$(OBJECT_DIR)glad.o")
 
     f.write("\nFILE_SRC= ")
     for filename in filepath:
@@ -104,7 +105,8 @@ def writeVariable(vFile):
             f.write(filename[index + 1:] + " ")
 
     f.write("\n")
-    f.write("BUILD_DIR= build/" + "\n\n\n")
+    f.write("BUILD_DIR= build/\n" )
+    f.write("OBJECT_DIR= build/object/" + "\n\n\n")
 
 
 def writeCompiler(vFile):
@@ -113,7 +115,7 @@ def writeCompiler(vFile):
     f.write("\tg++ $(OBJECTS) $(FLAGS) $(LINKER) -o $(BUILD_DIR)$(TARGET)" + "\n\n")
 
     if(vars(parser.parse_args()).get("opengl") != None):
-        f.write("glad.o: /usr/local/src/glad.c \n\tg++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c /usr/local/src/glad.c \n\n")
+        f.write("$(OBJECT_DIR)glad.o: /usr/local/src/glad.c \n\tg++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c /usr/local/src/glad.c -o $(OBJECT_DIR)glad.o\n\n")
 
     if(vars(parser.parse_args()).get("pch") != None):
         f.write("pch.h.gch : pch.h \n\t g++ -c pch.h $(FLAGS) -o pch.h.gch \n\n")
@@ -123,15 +125,15 @@ def writeCompiler(vFile):
             index = filename.rfind(".")
             indexf = filename.rfind("/")
             if(indexf != -1):
-                f.write((filename[indexf + 1:index] + ".o").replace("src/", "") +
+                f.write("$(OBJECT_DIR)"+(filename[indexf + 1:index] + ".o").replace("src/", "") +
                         ": " + filename + "\n")
             else:
-                f.write((filename[:index] + ".o").replace("src/", "") +
+                f.write("$(OBJECT_DIR)"+(filename[:index] + ".o").replace("src/", "") +
                         ": " + filename + "\n")
             f.write("\tg++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c " +
-                    filename + "\n\n")
+                    filename + " -o $(OBJECT_DIR)" + (filename[indexf+1:index] + ".o") + "\n\n")
 
-    f.write("clean : \n\t rm -f *.o")
+    f.write("clean : \n\t rm -f $(OBJECT_DIR)*.o")
 
 
 with open("Makefile", "w+") as f:

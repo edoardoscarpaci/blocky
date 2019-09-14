@@ -4,16 +4,19 @@
 #include "indexarray.hpp"
 #include "vbo.hpp"
 
-namespace graphics {
+namespace graphics
+{
 
-class Renderable {
+class Renderable
+{
 public:
-  Renderable();
+  Renderable() : m_Transform(1){};
 
   inline VBO *const getVBO() const { return m_Vbo; };
   inline Ibo *const getIbo() const { return m_Ibo; };
 
 protected:
+  glm::mat4 m_Transform;
   VBO *m_Vbo;
   Ibo *m_Ibo;
 };

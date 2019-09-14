@@ -1,9 +1,11 @@
 #include "pch.h"
 #pragma once
 
-namespace graphics {
+namespace graphics
+{
 
-class VBO {
+class VBO
+{
 public:
   VBO(uint32_t size, GLenum usage);
   VBO(uint32_t size, void *data, GLenum usage);
@@ -11,8 +13,8 @@ public:
 
   void fillBuffer(uint32_t size, void *data);
 
-  inline void bind() const;
-  inline void unbind() const;
+  void inline bind() const { glCall(glBindBuffer(GL_ARRAY_BUFFER, m_Id)); };
+  void inline unbind() const { glCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); };
 
   inline uint32_t getId() const { return m_Id; };
   inline void *getData() const { return m_Data; };

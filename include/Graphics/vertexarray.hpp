@@ -1,10 +1,12 @@
 #include "pch.h"
 #pragma once
 
-namespace graphics {
+namespace graphics
+{
 
 class Buffer;
-class Vao {
+class Vao
+{
 public:
   Vao();
 
@@ -16,8 +18,8 @@ public:
   void addBuffer(std::shared_ptr<Buffer> buffer);
   inline std::shared_ptr<Buffer> getBuffer(uint32_t index) const;
 
-  void inline bind() const;
-  void inline unbind() const;
+  void inline bind() const { glCall(glBindVertexArray(m_Id)); };
+  void inline unbind() const { glCall(glBindVertexArray(0)); };
   void inline disableAttrib(uint32_t index);
   void inline enableAttrib(uint32_t index);
 
