@@ -53,12 +53,10 @@ Window::Window(uint32_t height, uint32_t width, uint32_t FOV)
 }
 void Window::render()
 {
-  while (!glfwWindowShouldClose(m_Window))
-  {
-    glClear(GL_COLOR_BUFFER_BIT);
-    m_Renderer->flush();
-    glfwSwapBuffers(m_Window);
-  }
+  glClear(GL_COLOR_BUFFER_BIT);
+  m_Renderer->flush();
+  glfwSwapBuffers(m_Window);
+  glfwPollEvents();
 }
 
 void Window::attachCamera(graphics::Camera *camera)

@@ -14,8 +14,8 @@ Renderer::Renderer(const glm::mat4 projectionMatrix, graphics::Camera *camera)
   m_Shader = new Shader("Shader/vertex.shader", "Shader/fragment.shader");
   m_Shader->bind();
 
-  m_Vbo = new VBO(MAX_VERTEX_BUFFER_SIZE * sizeof(Vertex), GL_DYNAMIC_DRAW);
-  m_Ibo = new Ibo(MAX_VERTEX_BUFFER_SIZE * sizeof(uint32_t), GL_DYNAMIC_DRAW);
+  m_Vbo = new VBO(MAX_CUBE_BUFFER_SIZE * sizeof(Vertex), GL_DYNAMIC_DRAW);
+  m_Ibo = new Ibo(MAX_INDEX_BUFFER_SIZE * sizeof(uint32_t), GL_DYNAMIC_DRAW);
 
   m_Vao.bind();
   m_Vbo->bind();
@@ -36,17 +36,17 @@ void Renderer::addCube(Cube &cube)
   VBO *cubeVBO = cube.getVBO();
   Ibo *cubeIbo = cube.getIbo();
 
-  if (m_VertexCount * VERTEX_SIZE + cubeVBO->getSize() < m_DataBuffer.max_size())
+  if ((m_VertexCount * VERTEX_SIZE) + cubeVBO->getSize() < m_DataBuffer.max_size())
   {
 
-    std::memcpy(m_DataBuffer.begin(), cubeVBO->getData(), cubeVBO->getSize());
+    std::memcpy(m_DataBuffer.begin() + (m_VertexCount * VERTEX_SIZE), cubeVBO->getData(), cubeVBO->getSize());
 
     const uint32_t *data = cubeIbo->getData();
-    uint32_t offset = VERTEX_CUBE * m_VertexCount;
+    uint32_t offset = m_VertexCount;
 
     for (uint32_t i = 0; i < cubeIbo->getCount(); i++)
     {
-      m_IndicesBuffer[i + offset] = *(data + i) + offset;
+      m_IndicesBuffer[i + (offset / VERTEX_CUBE) * INDEX_CUBE] = *(data + i) + offset;
     };
 
     m_VertexCount += cubeVBO->getSize() / VERTEX_SIZE;
@@ -54,17 +54,20 @@ void Renderer::addCube(Cube &cube)
   else
   {
     flush();
-    std::memcpy(m_DataBuffer.end(), cubeVBO->getData(), cubeVBO->getSize());
+    std::memcpy(m_DataBuffer.begin(), cubeVBO->getData(), cubeVBO->getSize());
+
+    m_VertexCount = 0;
+    std::cout << "Flushed" << std::endl;
 
     const uint32_t *data = cubeIbo->getData();
-    uint32_t offset = VERTEX_CUBE * m_VertexCount;
+    uint32_t offset = m_VertexCount;
 
     for (uint32_t i = 0; i < cubeIbo->getCount(); i++)
     {
-      m_IndicesBuffer[i + offset] = *data + offset;
+      m_IndicesBuffer[i + (offset / VERTEX_CUBE) * INDEX_CUBE] = *(data + i) + offset;
     };
 
-    m_VertexCount += cubeVBO->getSize();
+    m_VertexCount += cubeVBO->getSize() / VERTEX_SIZE;
   }
 } // namespace graphics
 
@@ -73,6 +76,9 @@ void Renderer::flush()
 
   m_Vbo->fillBuffer(m_VertexCount * VERTEX_SIZE, m_DataBuffer.data());
   m_Ibo->fillIbo((m_VertexCount / 8) * INDEX_CUBE, m_IndicesBuffer.data());
+
+  //std::cout << "Cube: " << m_VertexCount / 8 << std::endl;
+
   m_Vao.bind();
   m_Ibo->bind();
   m_Vbo->bind();
@@ -88,6 +94,7 @@ void Renderer::flush()
 void Renderer::attachCamera(graphics::Camera *camera)
 {
   m_ActiveCamera = camera;
+  std::cout << "CAMERA ATTACHED" << std::endl;
 }
 
 void Renderer::uploadUniform()

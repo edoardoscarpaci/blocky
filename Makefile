@@ -3,9 +3,9 @@ INCLUDE_DIR= -I./ -I./usr/include/ -Iinclude/  -I/usr/include/glad/  -I/usr/incl
 SRC_DIR = -Isrc/
 FLAGS= -Wall -pthread -ggdb -g3 -D DEBUG  -ldl  `pkg-config --static --libs x11 xrandr xi xxf86vm glfw3` -lpng
 LINKER=  
-OBJECTS= $(OBJECT_DIR)main.o $(OBJECT_DIR)block.o $(OBJECT_DIR)cube.o $(OBJECT_DIR)camera.o $(OBJECT_DIR)vertexarray.o $(OBJECT_DIR)buffer.o $(OBJECT_DIR)window.o $(OBJECT_DIR)indexarray.o $(OBJECT_DIR)vbo.o $(OBJECT_DIR)texture.o $(OBJECT_DIR)shader.o $(OBJECT_DIR)renderer.o $(OBJECT_DIR)keybinding.o $(OBJECT_DIR)datatype.o $(OBJECT_DIR)player.o $(OBJECT_DIR)glad.o
-FILE_SRC= main.cpp block.cpp cube.cpp camera.cpp vertexarray.cpp buffer.cpp window.cpp indexarray.cpp vbo.cpp texture.cpp shader.cpp renderer.cpp keybinding.cpp datatype.cpp player.cpp 
-FILE_INCLUDE= macro.h block.hpp vbo.hpp cube.hpp buffer.hpp texture.hpp camera.hpp shader.hpp window.hpp renderable.hpp vertexarray.hpp renderer.hpp common.hpp indexarray.hpp keybinding.hpp datatype.hpp entity.hpp player.hpp 
+OBJECTS= $(OBJECT_DIR)main.o $(OBJECT_DIR)block.o $(OBJECT_DIR)cube.o $(OBJECT_DIR)camera.o $(OBJECT_DIR)vertexarray.o $(OBJECT_DIR)buffer.o $(OBJECT_DIR)window.o $(OBJECT_DIR)indexarray.o $(OBJECT_DIR)vbo.o $(OBJECT_DIR)texture.o $(OBJECT_DIR)shader.o $(OBJECT_DIR)renderer.o $(OBJECT_DIR)keybinding.o $(OBJECT_DIR)timer.o $(OBJECT_DIR)callback.o $(OBJECT_DIR)gamemanager.o $(OBJECT_DIR)datatype.o $(OBJECT_DIR)entity.o $(OBJECT_DIR)player.o $(OBJECT_DIR)dynamic.o $(OBJECT_DIR)glad.o
+FILE_SRC= main.cpp block.cpp cube.cpp camera.cpp vertexarray.cpp buffer.cpp window.cpp indexarray.cpp vbo.cpp texture.cpp shader.cpp renderer.cpp keybinding.cpp timer.cpp callback.cpp gamemanager.cpp datatype.cpp entity.cpp player.cpp dynamic.cpp 
+FILE_INCLUDE= macro.h block.hpp vbo.hpp cube.hpp buffer.hpp texture.hpp camera.hpp shader.hpp window.hpp renderable.hpp vertexarray.hpp renderer.hpp common.hpp indexarray.hpp keybinding.hpp callback.hpp datatype.hpp timer.hpp gamemanager.hpp dynamic.hpp entity.hpp player.hpp 
 BUILD_DIR= build/
 OBJECT_DIR= build/object/
 
@@ -56,11 +56,26 @@ $(OBJECT_DIR)renderer.o: src/Graphics/renderer.cpp
 $(OBJECT_DIR)keybinding.o: src/util/keybinding.cpp
 	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/util/keybinding.cpp -o $(OBJECT_DIR)keybinding.o
 
+$(OBJECT_DIR)timer.o: src/util/timer.cpp
+	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/util/timer.cpp -o $(OBJECT_DIR)timer.o
+
+$(OBJECT_DIR)callback.o: src/util/callback.cpp
+	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/util/callback.cpp -o $(OBJECT_DIR)callback.o
+
+$(OBJECT_DIR)gamemanager.o: src/util/gamemanager.cpp
+	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/util/gamemanager.cpp -o $(OBJECT_DIR)gamemanager.o
+
 $(OBJECT_DIR)datatype.o: src/util/datatype.cpp
 	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/util/datatype.cpp -o $(OBJECT_DIR)datatype.o
 
+$(OBJECT_DIR)entity.o: src/Entity/entity.cpp
+	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/Entity/entity.cpp -o $(OBJECT_DIR)entity.o
+
 $(OBJECT_DIR)player.o: src/Entity/player.cpp
 	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/Entity/player.cpp -o $(OBJECT_DIR)player.o
+
+$(OBJECT_DIR)dynamic.o: src/Entity/dynamic.cpp
+	g++ $(FLAGS) $(SRC_DIR) $(INCLUDE_DIR) -c src/Entity/dynamic.cpp -o $(OBJECT_DIR)dynamic.o
 
 clean : 
 	 rm -f $(OBJECT_DIR)*.o

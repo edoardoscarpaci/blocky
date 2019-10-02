@@ -15,6 +15,8 @@ public:
     glm::mat4 getViewMatrix();
 
 private:
+    Vector3 m_Position;
+    const float m_CameraHeight;
     glm::mat4 m_ViewMatrix;
 };
 } // namespace graphics

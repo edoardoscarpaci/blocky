@@ -4,24 +4,26 @@
 #include "Entity/player.hpp"
 #include "util/keybinding.hpp"
 
+#include "util/gamemanager.hpp"
+
+using namespace graphics;
 int main(int argc, char **argv)
 {
 
-  graphics::Window *w = graphics::Window::createInstance(600, 300);
-  Keybinding::attachWindow(w);
+  GameManager *g = GameManager::createInstance(640, 320);
+  graphics::Renderer *r = graphics::Window::getInstance()->getRenderer();
 
-  Player player(Vector3(300, 150, 0));
-  graphics::Renderer *r = w->getRenderer();
+  Player *m_Player = new Player(Vector3(100, 0, 0), 0.1f);
 
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < 1024; i++)
   {
-    for (int j = 0; j < 128; j++)
+    for (int j = -20; j < 0; j++)
     {
-      graphics::Cube c(Vector3(j, -1, i));
+      graphics::Cube c = graphics::Cube(Vector3(i, 0, j));
       r->addCube(c);
     }
   }
 
-  w->render();
+  g->Run();
   std::cout << "OpenGL VERSION" << GLVersion.major << "." << GLVersion.minor;
 }

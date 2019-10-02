@@ -33,6 +33,9 @@ public:
   inline Renderer *getRenderer() const { return m_Renderer; };
   inline const GLFWwindow *const getWindow() const { return m_Window; }
 
+  inline uint32_t getHeight() const { return m_Height; };
+  inline uint32_t getWidth() const { return m_Width; };
+
   void attachCamera(graphics::Camera *camera);
 
 protected:

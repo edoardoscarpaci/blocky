@@ -8,9 +8,10 @@
 #include "Graphics/camera.hpp"
 
 #define VERTEX_CUBE 8
-#define MAX_CUBE_BUFFER_SIZE 1000 * VERTEX_CUBE
+#define MAX_CUBE 10000
+#define MAX_CUBE_BUFFER_SIZE MAX_CUBE *VERTEX_CUBE
 #define VERTEX_SIZE sizeof(Vertex)
-#define MAX_VERTEX_BUFFER_SIZE MAX_CUBE_BUFFER_SIZE *INDEX_CUBE
+#define MAX_INDEX_BUFFER_SIZE MAX_CUBE *INDEX_CUBE
 #define INDEX_CUBE 36
 
 namespace graphics
@@ -25,7 +26,6 @@ public:
 
   // void addRenderable();
   void addCube(Cube &cube);
-
   void flush();
   void attachCamera(graphics::Camera *camera);
 
@@ -39,7 +39,7 @@ private:
   Shader *m_Shader;
   uint32_t m_VertexCount;
   std::array<uint8_t, MAX_CUBE_BUFFER_SIZE * VERTEX_SIZE> m_DataBuffer;
-  std::array<uint32_t, MAX_VERTEX_BUFFER_SIZE> m_IndicesBuffer;
+  std::array<uint32_t, MAX_INDEX_BUFFER_SIZE> m_IndicesBuffer;
 
   glm::mat4 m_ProjectionMatrix;
 

@@ -1,16 +1,17 @@
 #include "pch.h"
+#include "Entity/dynamic.hpp"
 #pragma once
 
-class Entity
+class Entity : Dynamic
 {
 public:
-    virtual ~Entity(){};
-
+    virtual ~Entity() override;
     virtual void getDamage(float amount) = 0;
     virtual void Die() = 0;
+    virtual void Update(float elapsedTime) override;
 
 protected:
-    Entity(){};
+    Entity();
 
     Vector3 m_Position;
     float m_Speed;

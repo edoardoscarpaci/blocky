@@ -8,14 +8,14 @@ Cube::Cube(Vector3 position) : m_Position(position), Renderable()
     m_Transform = glm::translate(m_Transform, position);
 
     Vertex vertices[] = {
-        Vertex(Vector3(-1, -1, 0), Vector2(0, 0)), //First Vertex
-        Vertex(Vector3(-1, -1, 1), Vector2(0, 0)), //Second Vertex
-        Vertex(Vector3(1, -1, 1), Vector2(1, 0)),  //Third Vertex
-        Vertex(Vector3(1, -1, 0), Vector2(1, 0)),  //Fourth Vertex
-        Vertex(Vector3(-1, 1, 0), Vector2(0, 1)),  //Fifth Vertex
-        Vertex(Vector3(-1, 1, 1), Vector2(0, 1)),  //Sixth Vertex
-        Vertex(Vector3(1, 1, 1), Vector2(1, 1)),   //Seventh Vertex
-        Vertex(Vector3(1, 1, 0), Vector2(1, 1)),   //Eight Vertex
+        Vertex(Vector3(-0.5, -0.5, 0), Vector2(0, 0)),   //First Vertex
+        Vertex(Vector3(-0.5, -0.5, 0.5), Vector2(0, 0)), //Second Vertex
+        Vertex(Vector3(0.5, -0.5, 0.5), Vector2(1, 0)),  //Third Vertex
+        Vertex(Vector3(0.5, -0.5, 0), Vector2(1, 0)),    //Fourth Vertex
+        Vertex(Vector3(-0.5, 0.5, 0), Vector2(0, 1)),    //Fifth Vertex
+        Vertex(Vector3(-0.5, 0.5, 0.5), Vector2(0, 1)),  //Sixth Vertex
+        Vertex(Vector3(0.5, 0.5, 0.5), Vector2(1, 1)),   //Seventh Vertex
+        Vertex(Vector3(0.5, 0.5, 0), Vector2(1, 1)),     //Eight Vertex
     };
 
     uint32_t indices[] =
@@ -28,10 +28,15 @@ Cube::Cube(Vector3 position) : m_Position(position), Renderable()
             3, 7, 6, 6, 2, 3  //Right
         };
 
+    //m_Position = m_Transform * glm::vec4(m_Position, 1);
+
+    for (int i = 0; i < 8; i++)
+    {
+        vertices[i].position += m_Position;
+    }
+
     m_Vbo = new VBO(sizeof(vertices), vertices, GL_STATIC_DRAW);
     m_Ibo = new Ibo(indices, sizeof(indices) / sizeof(uint32_t), GL_STATIC_DRAW);
-
-    m_Position = m_Transform * glm::vec4(m_Position, 1);
 }
 Cube::Cube(Vector3 position, Texture tex) : m_Position(position), m_Texture(tex), Renderable()
 {
@@ -58,11 +63,15 @@ Cube::Cube(Vector3 position, Texture tex) : m_Position(position), m_Texture(tex)
             0, 4, 5, 5, 1, 0, //Left
             3, 7, 6, 6, 2, 3  //Right
         };
+    m_Position = m_Transform * glm::vec4(m_Position, 1);
+
+    for (int i = 0; i < 8; i++)
+    {
+        vertices[0].position += m_Position;
+    }
 
     m_Vbo = new VBO(sizeof(vertices), vertices, GL_STATIC_DRAW);
     m_Ibo = new Ibo(indices, sizeof(indices) / sizeof(uint32_t), GL_STATIC_DRAW);
-
-    m_Position = m_Transform * glm::vec4(m_Position, 1);
 }
 
 void Cube::setPosition(const Vector3 &pos)
